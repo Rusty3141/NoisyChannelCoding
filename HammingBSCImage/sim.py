@@ -1,7 +1,7 @@
 import copy
 import sys
 import random
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 def Parity(data):
@@ -18,9 +18,10 @@ def Probability(received, transmitted, total, flipProb):
     return result
 
 
-f = 0.05
+f = 0.1
 
 img = Image.open(sys.argv[1]).convert("L")
+img = ImageOps.exif_transpose(img)
 
 img.save("GreyscaleOriginal.png")
 print("Converted to greyscale.")
@@ -48,8 +49,7 @@ for i in range(len(blocks)):
 for i in range(0, len(blocks), 2):
     pixel = "".join([str(x) for x in blocks[i]])[:4] + \
         "".join([str(x) for x in blocks[i+1]])[:4]
-    pixels[i/2 // img.size[1], i/2 %
-           img.size[0]] = int(pixel, 2)
+    pixels[i/2 // img.size[1], i/2 % img.size[1]] = int(pixel, 2)
 
 img.save(f"Noisy(f={f}).png")
 img.show()
@@ -78,7 +78,7 @@ for i in range(0, len(blocks), 2):
     pixel = "".join([str(x) for x in blocks[i]])[:4] + \
         "".join([str(x) for x in blocks[i+1]])[:4]
     pixels[i/2 // img.size[1], i/2 %
-           img.size[0]] = int(pixel, 2)
+           img.size[1]] = int(pixel, 2)
 
 img.save(f"Decoded(f={f}).png")
 img.show()
